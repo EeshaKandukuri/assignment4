@@ -1,25 +1,36 @@
 from flask import Flask, request
 import os
 import json
+from prometheus_client import Counter, make_wsgi_app
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from kubernetes import client, config
 
 app = Flask(__name__)
+request_counter = Counter(
+    'custom_request_count',
+    'num requests per endpoint',
+    ['endpoint']
+)
 
 
 @app.route("/")
 def hello():
+    request_counter.labels(endpoint='/').inc()
     return "Hello World!"
 
 
 @app.route("/greetings")
 def greetings():
+    request_counter.labels(endpoint='/greetings').inc()
     greeting = os.getenv("GREETING")
     return greeting
 
 
 @app.route("/listcontents")
 def listcontents():
+    request_counter.labels(endpoint='/listcontents').inc()
+
     contents = os.listdir("/hostfolder")
     fp = open("/hostfolder/filenames.txt","r")
     lines = fp.readlines()
@@ -28,6 +39,7 @@ def listcontents():
 
 @app.route("/getk8sobjects")
 def get_cluster_details():
+    request_counter.labels(endpoint='/getk8sobjects').inc()
     config.load_incluster_config()
 
     # Requirement 1.2
