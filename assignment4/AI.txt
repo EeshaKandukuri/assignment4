@@ -1,0 +1,7 @@
+ChatGPT-5.6
+
+why is docker img build failing with minikube containerd
+how to check docker img successfully built in minikube
+how to test Flask app Prometheus counters incrementing correctly
+how to get minikube ip address? is this hardcoding?
+how to see what kubernetes namespace is being used? default value?
