@@ -93,6 +93,10 @@ def get_cluster_details():
     obj_to_return = json.dumps(output)
     return obj_to_return
 
+app.wsgi_app = DispatcherMiddleware(
+    app.wsgi_app,
+    {'/metrics': make_wsgi_app()}
+)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001)
